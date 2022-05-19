@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch('/api/getComments')
     .then(response => response.json())
     .then(data => {
-      console.log(data)
       loadComments(data)
     })
 })
@@ -56,9 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
   fetch('/api/getComments')
     .then(response => response.json())
     .then(data => {
-      console.log(data)
       loadComments(data)
     })
+    .catch(err => console.log(err))
 })
 
 // populate comments list with comment data
@@ -79,11 +78,25 @@ function loadComments(data) {
     content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
-    content += `<button class="btn-upvote">♥</button><span class="upvote">${upvotes} Upvotes</span>`
+    content += `<button class="btn-upvote" onclick="handleUpvote(${id})">♥</button><span class="upvote">${upvotes} Upvotes</span>`
     content += `<button class="btn-reply">Reply</button>`
     content += `</div></div>`
   })
 
   commentsList.innerHTML = content
 
+}
+
+// add upvote
+function handleUpvote(id) {
+  const fetchOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({id})
+  };
+
+  fetch(`/api/upvote`, fetchOptions)
+    .catch(err => console.log(err))
 }

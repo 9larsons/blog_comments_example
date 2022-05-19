@@ -17,6 +17,12 @@ const connection = mysql.createConnection({
     database: 'comments_schema'
 })
 
+// ... connect
+connection.connect(error => {
+  if (error) throw error
+  console.log("Connected to the database.")
+}) 
+
 // add a new comment
 app.post("/api/addComment", (request, response) => {
   const newCommentValues = [
@@ -27,7 +33,7 @@ app.post("/api/addComment", (request, response) => {
     // let database create timestamp for now...
     `insert into comments (text,userId,instant) values (?,?,now());`,
     newCommentValues,
-    function (error, data, fields) {
+    function (error, data) {
       if (error) console.log(error)
       response.status(201).json({
         status: "success",
@@ -49,7 +55,7 @@ app.get('/api/getComments', (request, response) => {
       ) upvotes
         on upvotes.commentId = comments.id
     order by comments.instant;`,
-    function (error, data, fields) {
+    function (error, data) {
       if (error) console.log(error)
       response.send(data)
       console.log("Loaded Comments")
@@ -57,10 +63,25 @@ app.get('/api/getComments', (request, response) => {
   )
 })
 
-connection.connect(error => {
-  if (error) throw error
-  console.log("Connected to the database.")
-}) 
+// add upvote
+app.post('/api/upvote', (request, response) => {
+  const upvote = [
+    request.body.id, // commentId
+    Math.floor(Math.random()*10000+1), // user ID
+  ]
+  connection.query(
+    // let database create timestamp for now...
+    `insert into upvotes (commentId,userId,instant) values (?,?,now());`,
+    upvote,
+    function (error, data) {
+      if (error) console.log(error)
+      response.status(201).json({
+        status: "success",
+        message: "upvote added",
+      })
+    }
+  )
+})
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'public/index.html'))

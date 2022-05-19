@@ -9,7 +9,25 @@
 </head>
 
 <body>
-    <h1>Hello world.</h1>
+  <main style="min-width: 400px; margin: auto; max-width: 800px;">
+
+    <h1 style="text-align: center;">Comments</h1>
+
+    <div style="text-align: center;">
+      <form id="new-comment-form" action="/api/addComment" method="POST">
+        <div>
+          <textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+
+    <hr>
+
+    <br>
+
+  </main>
+  <script src="index.js"></script>
 </body>
 
 </html>

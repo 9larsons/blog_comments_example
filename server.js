@@ -17,10 +17,29 @@ const connection = mysql.createConnection({
     database: 'comments_schema'
 })
 
+app.post("/api/addComment", (request, response) => {
+  const newCommentValues = [
+    request.body.comment, // comment text
+    Math.floor(Math.random()*10000+1), // user ID
+  ]
+  connection.query(
+    // let database create timestamp for now...
+    `insert into comments (text,userId,instant) values (?,?,now());`,
+    newCommentValues,
+    function (error, data, fields) {
+      if (error) console.log(error)
+      response.status(201).json({
+        status: "success",
+        message: "comment created",
+      })
+    }
+  )
+})
+
 connection.connect(error => {
   if (error) throw error
   console.log("Connected to the database.")
-})
+}) 
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'public/index.html'))

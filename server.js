@@ -17,6 +17,7 @@ const connection = mysql.createConnection({
     database: 'comments_schema'
 })
 
+// add a new comment
 app.post("/api/addComment", (request, response) => {
   const newCommentValues = [
     request.body.comment, // comment text
@@ -32,6 +33,26 @@ app.post("/api/addComment", (request, response) => {
         status: "success",
         message: "comment created",
       })
+    }
+  )
+})
+
+// get all comments (sorted by date posted, oldest > newest)
+app.get('/api/getComments', (request, response) => {
+  connection.query(
+    `select comments.*,coalesce(upvotes.count,0) upvotes
+    from comments
+      left join (
+        select commentId,count(*) count
+            from upvotes
+            group by commentId
+      ) upvotes
+        on upvotes.commentId = comments.id
+    order by comments.instant;`,
+    function (error, data, fields) {
+      if (error) console.log(error)
+      response.send(data)
+      console.log("Loaded Comments")
     }
   )
 })

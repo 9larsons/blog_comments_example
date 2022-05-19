@@ -6,17 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Sample Project</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <main style="min-width: 400px; margin: auto; max-width: 800px;">
+  <main>
 
-    <h1 style="text-align: center;">Comments</h1>
+    <h2 class="center">Comments</h2>
 
-    <div style="text-align: center;">
+    <div class="center">
       <form id="new-comment-form" action="/api/addComment" method="POST">
         <div>
-          <textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
+          <textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;"
+            required></textarea>
           <button type="submit">Submit</button>
         </div>
       </form>
@@ -25,6 +27,12 @@
     <hr>
 
     <br>
+
+    <div id="comments">
+      <div id="comments-list">
+        <!-- populated with scripting -->
+      </div>
+    </div>
 
   </main>
   <script src="index.js"></script>

@@ -1,0 +1,31 @@
+main {
+  min-width: 400px;
+  margin: auto;
+  max-width: 800px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.center {
+  text-align: center;
+}
+
+.media {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.media-body {
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.comment-list-header {
+  font-size: 0.9rem;
+}
+
+.comment-list-user {
+  font-weight: 750;
+}

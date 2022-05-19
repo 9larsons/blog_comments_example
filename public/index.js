@@ -39,3 +39,50 @@ async function handleFormSubmit(event) {
     console.error(error);
   }
 }
+
+
+// load all comments on page load
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('/api/getComments')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      loadComments(data)
+    })
+})
+
+// load all comments on page load
+document.addEventListener('DOMContentLoaded', function () {
+  fetch('/api/getComments')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      loadComments(data)
+    })
+})
+
+// populate comments list with comment data
+function loadComments(data) {
+  console.log('loading comments')
+  console.log(data)
+
+  const commentsList = document.getElementById("comments-list")
+
+  if (data.length === 0) { return commentsList.innerHTML = "<p>No Comments</p>" }
+
+  let content = ""
+
+  data.forEach(({ id, text, userId, instant, upvotes }) => {
+    content += `<div class="media">`
+    content += `<div class="media-body">`
+    content += `<div class="comment-list-header">`
+    content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
+    content += `</div>`
+    content += `<p class="comment-text">${text}</p>`
+    content += `<span style="color:gray;">${upvotes} Upvotes  </span><button class="upvote-btn">&#x2191;</button>`
+    content += `</div></div>`
+  })
+
+  commentsList.innerHTML = content
+
+}

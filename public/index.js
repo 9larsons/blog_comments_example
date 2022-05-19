@@ -2,6 +2,11 @@ const form = document.getElementById("new-comment-form");
 
 form.addEventListener("submit", handleFormSubmit);
 
+const _userId = Math.floor(Math.random() * 10000 + 1)
+let newCommentAvatar = document.getElementById("new-comment-avatar")
+newCommentAvatar.src = `https://robohash.org/${_userId}`
+newCommentAvatar.alt = `User ${_userId}`
+
 // generic helper for form POST operation handling
 async function postFormDataAsJson({ url, formData }) {
   const plainFormData = Object.fromEntries(formData.entries());
@@ -72,8 +77,9 @@ function loadComments(data) {
   let content = ""
 
   data.forEach(({ id, text, userId, instant, upvotes }) => {
-    content += `<div class="media">`
-    content += `<div class="media-body">`
+    content += `<div class="comment-list">`
+    content += `<img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>`
+    content += `<div class="comment-list-content">`
     content += `<div class="comment-list-header">`
     content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
     content += `</div>`

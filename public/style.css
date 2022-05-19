@@ -9,7 +9,7 @@ main {
   text-align: center;
 }
 
-.media {
+.comment-list {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-align: start;
@@ -22,7 +22,7 @@ p {
   margin-bottom: 0.5em;
 }
 
-.media-body {
+.comment-list-content {
   -ms-flex: 1;
   flex: 1;
 }
@@ -66,4 +66,10 @@ p {
 
 .btn-reply:hover {
   text-decoration: underline;
+}
+
+.avatar {
+  width: 50px;
+  margin: 0 8px 0 8px;
+  border-radius: 30px;
 }

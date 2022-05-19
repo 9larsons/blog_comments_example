@@ -79,7 +79,8 @@ function loadComments(data) {
     content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
-    content += `<span style="color:gray;">${upvotes} Upvotes  </span><button class="upvote-btn">&#x2191;</button>`
+    content += `<button class="btn-upvote">♥</button><span class="upvote">${upvotes} Upvotes</span>`
+    content += `<button class="btn-reply">Reply</button>`
     content += `</div></div>`
   })
 

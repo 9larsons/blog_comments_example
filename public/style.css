@@ -17,6 +17,11 @@ main {
   margin-bottom: 2rem;
 }
 
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .media-body {
   -ms-flex: 1;
   flex: 1;
@@ -28,4 +33,37 @@ main {
 
 .comment-list-user {
   font-weight: 750;
+}
+
+.btn-upvote {
+  color:gray;
+  background-color: white;
+  border: none;
+  font-size: 14pt;
+  transition-duration: 0.4s;
+}
+
+.btn-upvote-upvoted {
+  color:darkorange;
+}
+
+.btn-upvote:hover {
+  color:darkorange;
+}
+
+.upvote {
+  color:gray;
+  padding-right: 10px;
+  font-size: 0.9rem;
+}
+
+.btn-reply {
+  border:none;
+  color:gray;
+  background-color: white;
+  font-size: 0.9rem;
+}
+
+.btn-reply:hover {
+  text-decoration: underline;
 }

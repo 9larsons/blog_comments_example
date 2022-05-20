@@ -45,25 +45,14 @@ async function handleFormSubmit(event) {
   }
 }
 
-
-// load all comments on page load
-document.addEventListener('DOMContentLoaded', function () {
+function getComments() {
+  console.log(`test`)
   fetch('/api/getComments')
     .then(response => response.json())
     .then(data => {
       loadComments(data)
     })
-})
-
-// load all comments on page load
-document.addEventListener('DOMContentLoaded', function () {
-  fetch('/api/getComments')
-    .then(response => response.json())
-    .then(data => {
-      loadComments(data)
-    })
-    .catch(err => console.log(err))
-})
+}
 
 // populate comments list with comment data
 function loadComments(data) {
@@ -84,13 +73,26 @@ function loadComments(data) {
     content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
-    content += `<button class="btn-upvote" onclick="handleUpvote(${id})">♥</button><span class="upvote">${upvotes} Upvotes</span>`
+    content += `<div class="btn-upvote" id=${id} value=${userId}></div>`
     content += `<button class="btn-reply">Reply</button>`
+    content += `<div class="btn-react" id=${id} value=${userId}></div>`
     content += `</div></div>`
   })
 
   commentsList.innerHTML = content
 
+  const upvote_buttons = document.querySelectorAll('.btn-upvote')
+  upvote_buttons.forEach((button) => {
+    ReactDOM.render(<UpvoteButton id={button.id} userId={button.value} />, button);
+  })  
+
+}
+
+const ReactButton = ({ id,userId }) => {
+  const handleUpvote = () => {
+    console.log(`id: ${id} userId ${userId}`)
+  }
+  return <button className="btn-upvote" onClick={handleUpvote}>♥</button>
 }
 
 // add upvote

@@ -63,7 +63,6 @@ getComments()
 
 // populate comments list with comment data
 function loadComments(data) {
-  console.log('loading comments')
 
   const commentsList = document.getElementById("comments-list")
 
@@ -100,14 +99,14 @@ function loadComments(data) {
             <span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).fromNow()}</span>
           </div>
           <p class="comment-text">${text}</p>
-          <div class="btn-upvote" id=${id} value=${upvotes}></div>
-            <button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>
-              <div class="comment-reply" style="display: none;" value=${id}>
-                <form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>
-                  <textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
-                <input type="submit" value="reply" />
-                </form>
-              </div>
+          <span class="btn-upvote" id=${id} value=${upvotes}></span>
+          <button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>
+            <div class="comment-reply" style="display: none;" value=${id}>
+              <form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>
+                <textarea class="comment-reply-content" type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
+                <input class="comment-reply-button" type="submit" value="Reply" />
+              </form>
+            </div>
         </div>
       </div>`
 
@@ -145,7 +144,6 @@ function loadComments(data) {
 }
 
 function toggleCommentReply(id) {
-  console.log(id)
   let div = document.querySelector(`div.comment-reply[value='${id}']`)
   if (div.style.display == 'none') div.style.display = 'block'
   else (div.style.display = 'none')
@@ -215,7 +213,7 @@ const UpvoteButton = ({ id, upvotes }) => {
     setUpvoted(!upvoted)
   }
   return (
-    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote} key={id}>♥ {upvoteCount}</button>
+    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote} key={id}>♥ <span className="upvote-count">{upvoteCount}</span></button>
   )
 }
 

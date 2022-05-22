@@ -63,7 +63,6 @@ app.get('/api/getComments', (request, response) => {
     function (error, data) {
       if (error) console.log(error)
       response.send(data)
-      console.log("Loaded Comments")
     }
   )
 })
@@ -74,7 +73,6 @@ app.post('/api/upvote', (request, response) => {
     request.body.id, // commentId
     request.body.userId // user Id
   ]
-  console.log(`add ${upvote}`)
   connection.query(
     // let database create timestamp for now...
     `insert into upvotes (commentId,userId,instant) values (?,?,now());`,
@@ -94,7 +92,6 @@ app.delete('/api/upvotes', (request, response) => {
     request.body.id, // commentId
     request.body.userId, // user ID
   ]
-  console.log(`delete ${upvote}`)
   connection.query(
     // let database create timestamp for now...
     `delete from upvotes where commentId = ? and userId = ?;`,
@@ -119,25 +116,12 @@ io.on('connection', (socket) => {
     console.log(`.... user disconnected`)
   })
   socket.on('upvote deleted', (id) => {
-    console.log(`upvote deleted post ${id}`)
-    // io.emit('upvote deleted', id)
     socket.broadcast.emit('upvote deleted', id)
   })
   socket.on('upvote added', (id) => {
-    console.log(`upvote added post ${id}`)
-    // io.emit('upvote added', id)
     socket.broadcast.emit('upvote added', id)
   })
 })
-
-// io.on('upvote added', (id) => {
-//   console.log(`.client added upvote ${id}`)
-//   socket.broadcast.emit('upvote added', id)
-// })
-// io.on('upvote deleted', (id) => {
-//   console.log(`.client deleted upvote ${id}`)
-//   socket.broadcast.emit('upvote deleted', id)
-// })
 
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

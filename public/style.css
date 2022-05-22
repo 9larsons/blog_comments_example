@@ -5,8 +5,19 @@ main {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+h2 {
+  margin: 10px;
+}
+
 .center {
   text-align: center;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 5px;
 }
 
 .comment-list {
@@ -19,6 +30,16 @@ main {
 
 .comment-list-reply {
   margin-left: 3rem;
+}
+
+textarea {
+  margin: 5px 10px;
+}
+
+.comment-reply-button {
+ display: inline-flex;
+ margin-top: 1.2rem;
+ vertical-align: top;
 }
 
 p {
@@ -43,7 +64,7 @@ p {
   color:gray;
   background-color: white;
   border: none;
-  font-size: 14pt;
+  font-size: 1.2rem;
   transition-duration: 0.4s;
 }
 
@@ -55,11 +76,10 @@ p {
   color:darkorange;
 }
 
-.upvote {
-  color:gray;
-  padding-right: 10px;
+.upvote-count {
   font-size: 0.9rem;
 }
+
 
 .btn-reply {
   border:none;

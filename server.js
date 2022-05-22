@@ -1,6 +1,10 @@
 // prepare express
 const express = require('express')
 const app = express()
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require('socket.io')
+const io = new Server(server)
 const path = require('path')
 const port = 8080
 
@@ -108,6 +112,32 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'index.html'))
 })
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  console.log(`... user connected`)
+  socket.on('disconnect', () => {
+    console.log(`.... user disconnected`)
+  })
+  socket.on('upvote deleted', (id) => {
+    console.log(`upvote deleted post ${id}`)
+    // io.emit('upvote deleted', id)
+    socket.broadcast.emit('upvote deleted', id)
+  })
+  socket.on('upvote added', (id) => {
+    console.log(`upvote added post ${id}`)
+    // io.emit('upvote added', id)
+    socket.broadcast.emit('upvote added', id)
+  })
+})
+
+// io.on('upvote added', (id) => {
+//   console.log(`.client added upvote ${id}`)
+//   socket.broadcast.emit('upvote added', id)
+// })
+// io.on('upvote deleted', (id) => {
+//   console.log(`.client deleted upvote ${id}`)
+//   socket.broadcast.emit('upvote deleted', id)
+// })
+
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

@@ -1,12 +1,16 @@
-const form = document.getElementById("new-comment-form");
-
-form.addEventListener("submit", handleFormSubmit);
+// socket.io setup
+var socket = io()
 
 // userId would come from auth in a 'full' project
 const _userId = Math.floor(Math.random() * 10000 + 1)
 let newCommentAvatar = document.getElementById("new-comment-avatar")
 newCommentAvatar.src = `https://robohash.org/${_userId}`
 newCommentAvatar.alt = `User ${_userId}`
+
+// set up submission form
+const form = document.getElementById("new-comment-form");
+form.addEventListener("submit", handleFormSubmit);
+
 
 // generic helper for form POST operation handling
 async function postFormDataAsJson({ url, formData }) {
@@ -97,21 +101,38 @@ const UpvoteButton = ({ id, upvotes }) => {
   const [upvoted, setUpvoted] = React.useState(false)
   const [upvoteCount, setUpvoteCount] = React.useState(upvotes)
 
-  console.log(`userId: ${_userId}`)
+  // handlers for subscription to live updates
+  socket.on('upvote added', (postId) => {
+    if (postId === id) {
+      let newUpvoteCount = upvoteCount
+      newUpvoteCount++
+      setUpvoteCount(newUpvoteCount)
+    }
+  })
 
+  socket.on('upvote deleted', (postId) => {
+    if (postId === id) {
+      let newUpvoteCount = upvoteCount
+      if (newUpvoteCount > 0) newUpvoteCount--
+      setUpvoteCount(newUpvoteCount)
+    }
+  })
+
+  // client - server calls and state updates
   const handleUpvote = () => {
-
-    if (!upvoted) { 
+    if (!upvoted) {
       // send to server (could break here if there's an error adding and handle on client)
       addUpvote(id, _userId)
+      socket.emit('upvote added', id)
       // render higher upvote count on client
       let newUpvoteCount = upvoteCount
       newUpvoteCount++
       setUpvoteCount(newUpvoteCount)
     }
-    else { 
+    else {
       // send to server
       deleteUpvote(id, _userId)
+      socket.emit('upvote deleted', id)
       // shouldn't be able to remove if at 0, but just in case...
       if (upvoteCount > 0) {
         let newUpvoteCount = upvoteCount
@@ -129,7 +150,6 @@ const UpvoteButton = ({ id, upvotes }) => {
 
 // add upvote
 function addUpvote(id, userId) {
-  console.log({ id, userId })
   const fetchOptions = {
     method: "POST",
     headers: {

@@ -73,7 +73,7 @@ function loadComments(data) {
     content += `<img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>`
     content += `<div class="comment-list-content">`
     content += `<div class="comment-list-header">`
-    content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
+    content += `<span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).fromNow()}</span>`
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
     content += `<div class="btn-upvote" id=${id} value=${upvotes}></div>`

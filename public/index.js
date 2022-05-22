@@ -90,26 +90,45 @@ function loadComments(data) {
   let content = ""
 
   parentComments.forEach(({ id, text, userId, instant, upvotes, replies }) => {
-    content += `<div class="comment-list">`
-    content += `<img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>`
-    content += `<div class="comment-list-content">`
-    content += `<div class="comment-list-header">`
-    content += `<span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).fromNow()}</span>`
-    content += `</div>`
-    content += `<p class="comment-text">${text}</p>`
-    content += `<div class="btn-upvote" id=${id} value=${upvotes}></div>`
-    content += `<button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>`
-    // add reply to content, hidden at start
-    content += `<div class="comment-reply" style="display: none;" value=${id}>`
-    content += `<form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>`
-    content += `<textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;"
-    required></textarea>`
-    content += `<input type="submit" value="reply" />`
-    content += `</form>`
-    content += `</div>`
-    // close out
-    content += `</div></div>`
-  })
+
+    // add parent content, buttons
+    content += `
+      <div class="comment-list">
+        <img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>
+        <div class="comment-list-content">
+          <div class="comment-list-header">
+            <span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).fromNow()}</span>
+          </div>
+          <p class="comment-text">${text}</p>
+          <div class="btn-upvote" id=${id} value=${upvotes}></div>
+            <button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>
+              <div class="comment-reply" style="display: none;" value=${id}>
+                <form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>
+                  <textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
+                <input type="submit" value="reply" />
+                </form>
+              </div>
+        </div>
+      </div>`
+
+    // add replies (child) content
+    if (replies.length > 0) {
+      replies.forEach(reply => {
+        content += `
+        <div class="comment-list comment-list-reply">
+          <img class="avatar" src="https://robohash.org/${reply.userId}" alt="User ${reply.userId}"/>
+          <div class="comment-list-content">
+            <div class="comment-list-header">
+              <span class="comment-list-user">User ${reply.userId}</span> - <span>${moment(reply.instant).fromNow()}</span>
+            </div>
+            <p class="comment-text">${reply.text}</p>
+            <div class="btn-upvote" id=${reply.id} value=${reply.upvotes}></div>
+          </div>
+        </div>`
+      })
+    }
+
+    })
 
   commentsList.innerHTML = content
 

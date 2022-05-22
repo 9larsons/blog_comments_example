@@ -17,6 +17,10 @@ main {
   margin-bottom: 2rem;
 }
 
+.comment-list-reply {
+  margin-left: 3rem;
+}
+
 p {
   margin-top: 0.5em;
   margin-bottom: 0.5em;

@@ -8,9 +8,8 @@ newCommentAvatar.src = `https://robohash.org/${_userId}`
 newCommentAvatar.alt = `User ${_userId}`
 
 // set up submission form
-const form = document.getElementById("new-comment-form");
-form.addEventListener("submit", handleFormSubmit);
-
+const newCommentForm = document.getElementById("new-comment-form");
+newCommentForm.addEventListener("submit", handleFormSubmit);
 
 // generic helper for form POST operation handling
 async function postFormDataAsJson({ url, formData }) {
@@ -44,6 +43,7 @@ async function handleFormSubmit(event) {
 
   try {
     const formData = new FormData(form);
+    formData.append('userId', _userId)
     const responseData = await postFormDataAsJson({ url, formData });
   } catch (error) {
     console.error(error);
@@ -64,15 +64,32 @@ getComments()
 // populate comments list with comment data
 function loadComments(data) {
   console.log('loading comments')
-  console.log(data)
 
   const commentsList = document.getElementById("comments-list")
 
   if (data.length === 0) { return commentsList.innerHTML = "<p>No Comments</p>" }
 
+  // rebuild comment data into parent and child arrays of comment objects
+  let parentComments = []
+  let childComments = []
+  data.forEach(comment => {
+    if (comment.replyToId === null) parentComments.push(comment)
+    else (childComments.push(comment))
+  })
+
+  // map children to parents
+  parentComments.forEach(comment => {
+    comment.replies = []
+    childComments.forEach(reply => {
+      if (reply.replyToId === comment.id) {
+        comment.replies.push(reply)
+      }
+    })
+  })
+
   let content = ""
 
-  data.forEach(({ id, text, userId, instant, upvotes }) => {
+  parentComments.forEach(({ id, text, userId, instant, upvotes, replies }) => {
     content += `<div class="comment-list">`
     content += `<img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>`
     content += `<div class="comment-list-content">`
@@ -81,11 +98,24 @@ function loadComments(data) {
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
     content += `<div class="btn-upvote" id=${id} value=${upvotes}></div>`
-    content += `<button class="btn-reply">Reply</button>`
+    content += `<button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>`
+    // add reply to content, hidden at start
+    content += `<div class="comment-reply" style="display: none;" value=${id}>`
+    content += `<form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>`
+    content += `<textarea type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;"
+    required></textarea>`
+    content += `<input type="submit" value="reply" />`
+    content += `</form>`
+    content += `</div>`
+    // close out
     content += `</div></div>`
   })
 
   commentsList.innerHTML = content
+
+  // add reply handler to each reply form
+  const commentReplies = document.querySelectorAll(".comment-reply-form")
+  commentReplies.forEach(comment => comment.addEventListener('submit', handleReply))
 
   // use react to render the upvote button
   const upvote_buttons = document.querySelectorAll('.btn-upvote')
@@ -93,6 +123,28 @@ function loadComments(data) {
     ReactDOM.render(<UpvoteButton id={button.id} upvotes={button.getAttribute('value')} />, button);
   })
 
+}
+
+function toggleCommentReply(id) {
+  console.log(id)
+  let div = document.querySelector(`div.comment-reply[value='${id}']`)
+  if (div.style.display == 'none') div.style.display = 'block'
+  else (div.style.display = 'none')
+}
+
+async function handleReply(e) {
+  e.preventDefault()
+  const form = e.currentTarget;
+  const url = form.action;
+  try {
+    const formData = new FormData(form)
+    const replyToId = parseInt(form.getAttribute('value'))
+    formData.append('replyToId', replyToId)
+    formData.append('userId', _userId)
+    const responseData = await postFormDataAsJson({ url, formData });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // define react upvote button component

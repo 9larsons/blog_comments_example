@@ -1,6 +1,10 @@
 // prepare express
 const express = require('express')
 const app = express()
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require('socket.io')
+const io = new Server(server)
 const path = require('path')
 const port = 8080
 
@@ -67,8 +71,9 @@ app.get('/api/getComments', (request, response) => {
 app.post('/api/upvote', (request, response) => {
   const upvote = [
     request.body.id, // commentId
-    Math.floor(Math.random()*10000+1), // user ID
+    request.body.userId // user Id
   ]
+  console.log(`add ${upvote}`)
   connection.query(
     // let database create timestamp for now...
     `insert into upvotes (commentId,userId,instant) values (?,?,now());`,
@@ -83,10 +88,56 @@ app.post('/api/upvote', (request, response) => {
   )
 })
 
+app.delete('/api/upvotes', (request, response) => {
+  const upvote = [
+    request.body.id, // commentId
+    request.body.userId, // user ID
+  ]
+  console.log(`delete ${upvote}`)
+  connection.query(
+    // let database create timestamp for now...
+    `delete from upvotes where commentId = ? and userId = ?;`,
+    upvote,
+    function (error, data) {
+      if (error) console.log(error)
+      response.status(201).json({
+        status: "success",
+        message: "upvote deleted",
+      })
+    }
+  )
+})
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'index.html'))
 })
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  console.log(`... user connected`)
+  socket.on('disconnect', () => {
+    console.log(`.... user disconnected`)
+  })
+  socket.on('upvote deleted', (id) => {
+    console.log(`upvote deleted post ${id}`)
+    // io.emit('upvote deleted', id)
+    socket.broadcast.emit('upvote deleted', id)
+  })
+  socket.on('upvote added', (id) => {
+    console.log(`upvote added post ${id}`)
+    // io.emit('upvote added', id)
+    socket.broadcast.emit('upvote added', id)
+  })
+})
+
+// io.on('upvote added', (id) => {
+//   console.log(`.client added upvote ${id}`)
+//   socket.broadcast.emit('upvote added', id)
+// })
+// io.on('upvote deleted', (id) => {
+//   console.log(`.client deleted upvote ${id}`)
+//   socket.broadcast.emit('upvote deleted', id)
+// })
+
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

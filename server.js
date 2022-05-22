@@ -31,11 +31,12 @@ connection.connect(error => {
 app.post("/api/addComment", (request, response) => {
   const newCommentValues = [
     request.body.comment, // comment text
-    Math.floor(Math.random()*10000+1), // user ID
+    request.body.userId, // user ID
+    request.body.replyToId // only populated if a reply
   ]
   connection.query(
     // let database create timestamp for now...
-    `insert into comments (text,userId,instant) values (?,?,now());`,
+    `insert into comments (text,userId,instant,replyToId) values (?,?,now(),?);`,
     newCommentValues,
     function (error, data) {
       if (error) console.log(error)

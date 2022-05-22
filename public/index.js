@@ -97,7 +97,10 @@ const UpvoteButton = ({ id, upvotes }) => {
   const [upvoted, setUpvoted] = React.useState(false)
   const [upvoteCount, setUpvoteCount] = React.useState(upvotes)
 
+  console.log(`userId: ${_userId}`)
+
   const handleUpvote = () => {
+
     if (!upvoted) { 
       // send to server (could break here if there's an error adding and handle on client)
       addUpvote(id, _userId)
@@ -107,6 +110,7 @@ const UpvoteButton = ({ id, upvotes }) => {
       setUpvoteCount(newUpvoteCount)
     }
     else { 
+      // send to server
       deleteUpvote(id, _userId)
       // shouldn't be able to remove if at 0, but just in case...
       if (upvoteCount > 0) {
@@ -115,11 +119,11 @@ const UpvoteButton = ({ id, upvotes }) => {
         setUpvoteCount(newUpvoteCount)
       }
     }
-    addUpvote(id, _userId)
+    // toggle button color
     setUpvoted(!upvoted)
   }
   return (
-    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote}>♥ {upvoteCount}</button>
+    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote} key={id}>♥ {upvoteCount}</button>
   )
 }
 

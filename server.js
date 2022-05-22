@@ -67,8 +67,9 @@ app.get('/api/getComments', (request, response) => {
 app.post('/api/upvote', (request, response) => {
   const upvote = [
     request.body.id, // commentId
-    Math.floor(Math.random()*10000+1), // user ID
+    request.body.userId // user Id
   ]
+  console.log(`add ${upvote}`)
   connection.query(
     // let database create timestamp for now...
     `insert into upvotes (commentId,userId,instant) values (?,?,now());`,
@@ -86,8 +87,9 @@ app.post('/api/upvote', (request, response) => {
 app.delete('/api/upvotes', (request, response) => {
   const upvote = [
     request.body.id, // commentId
-    Math.floor(Math.random()*10000+1), // user ID
+    request.body.userId, // user ID
   ]
+  console.log(`delete ${upvote}`)
   connection.query(
     // let database create timestamp for now...
     `delete from upvotes where commentId = ? and userId = ?;`,

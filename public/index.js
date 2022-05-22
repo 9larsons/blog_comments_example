@@ -2,6 +2,7 @@ const form = document.getElementById("new-comment-form");
 
 form.addEventListener("submit", handleFormSubmit);
 
+// userId would come from auth in a 'full' project
 const _userId = Math.floor(Math.random() * 10000 + 1)
 let newCommentAvatar = document.getElementById("new-comment-avatar")
 newCommentAvatar.src = `https://robohash.org/${_userId}`
@@ -45,6 +46,7 @@ async function handleFormSubmit(event) {
   }
 }
 
+// get comments from database
 function getComments() {
   console.log(`test`)
   fetch('/api/getComments')
@@ -53,6 +55,8 @@ function getComments() {
       loadComments(data)
     })
 }
+
+getComments()
 
 // populate comments list with comment data
 function loadComments(data) {
@@ -75,34 +79,43 @@ function loadComments(data) {
     content += `<p class="comment-text">${text}</p>`
     content += `<div class="btn-upvote" id=${id} value=${userId}></div>`
     content += `<button class="btn-reply">Reply</button>`
-    content += `<div class="btn-react" id=${id} value=${userId}></div>`
     content += `</div></div>`
   })
 
   commentsList.innerHTML = content
 
+  // use react to render the upvote button
   const upvote_buttons = document.querySelectorAll('.btn-upvote')
   upvote_buttons.forEach((button) => {
-    ReactDOM.render(<UpvoteButton id={button.id} userId={button.value} />, button);
-  })  
+    ReactDOM.render(<UpvoteButton id={button.id} upvotes={button.value} />, button);
+  })
 
 }
 
-const ReactButton = ({ id,userId }) => {
+// define react upvote button component
+const UpvoteButton = ({ id, upvotes }) => {
+
+  const [upvoted, setUpvoted] = React.useState(false)
+
   const handleUpvote = () => {
-    console.log(`id: ${id} userId ${userId}`)
+    console.log(`id: ${id} userId ${_userId} upvotes ${upvotes}`)
+    addUpvote(id, _userId)
+    setUpvoted(!upvoted)
   }
-  return <button className="btn-upvote" onClick={handleUpvote}>♥</button>
+  return (
+    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote}>♥ {upvotes}</button>
+  )
 }
 
 // add upvote
-function handleUpvote(id) {
+function addUpvote(id, userId) {
+  console.log({ id, userId })
   const fetchOptions = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({id})
+    body: JSON.stringify({ id, userId })
   };
 
   fetch(`/api/upvote`, fetchOptions)

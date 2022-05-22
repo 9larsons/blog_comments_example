@@ -48,7 +48,6 @@ async function handleFormSubmit(event) {
 
 // get comments from database
 function getComments() {
-  console.log(`test`)
   fetch('/api/getComments')
     .then(response => response.json())
     .then(data => {
@@ -77,7 +76,7 @@ function loadComments(data) {
     content += `<span class="comment-list-user">User ${userId}</span> - <span>${new Date(instant).toLocaleString()}</span>`
     content += `</div>`
     content += `<p class="comment-text">${text}</p>`
-    content += `<div class="btn-upvote" id=${id} value=${userId}></div>`
+    content += `<div class="btn-upvote" id=${id} value=${upvotes}></div>`
     content += `<button class="btn-reply">Reply</button>`
     content += `</div></div>`
   })
@@ -87,7 +86,7 @@ function loadComments(data) {
   // use react to render the upvote button
   const upvote_buttons = document.querySelectorAll('.btn-upvote')
   upvote_buttons.forEach((button) => {
-    ReactDOM.render(<UpvoteButton id={button.id} upvotes={button.value} />, button);
+    ReactDOM.render(<UpvoteButton id={button.id} upvotes={button.getAttribute('value')} />, button);
   })
 
 }
@@ -96,14 +95,31 @@ function loadComments(data) {
 const UpvoteButton = ({ id, upvotes }) => {
 
   const [upvoted, setUpvoted] = React.useState(false)
+  const [upvoteCount, setUpvoteCount] = React.useState(upvotes)
 
   const handleUpvote = () => {
-    console.log(`id: ${id} userId ${_userId} upvotes ${upvotes}`)
+    if (!upvoted) { 
+      // send to server (could break here if there's an error adding and handle on client)
+      addUpvote(id, _userId)
+      // render higher upvote count on client
+      let newUpvoteCount = upvoteCount
+      newUpvoteCount++
+      setUpvoteCount(newUpvoteCount)
+    }
+    else { 
+      deleteUpvote(id, _userId)
+      // shouldn't be able to remove if at 0, but just in case...
+      if (upvoteCount > 0) {
+        let newUpvoteCount = upvoteCount
+        newUpvoteCount--
+        setUpvoteCount(newUpvoteCount)
+      }
+    }
     addUpvote(id, _userId)
     setUpvoted(!upvoted)
   }
   return (
-    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote}>♥ {upvotes}</button>
+    <button className={upvoted ? "btn-upvote btn-upvote-upvoted" : "btn-upvote"} onClick={handleUpvote}>♥ {upvoteCount}</button>
   )
 }
 
@@ -119,5 +135,18 @@ function addUpvote(id, userId) {
   };
 
   fetch(`/api/upvote`, fetchOptions)
+    .catch(err => console.log(err))
+}
+
+// delete upvote
+function deleteUpvote(id, userId) {
+  const fetchOptions = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, userId })
+  };
+  fetch(`/api/upvotes`, fetchOptions)
     .catch(err => console.log(err))
 }

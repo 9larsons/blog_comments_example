@@ -83,6 +83,25 @@ app.post('/api/upvote', (request, response) => {
   )
 })
 
+app.delete('/api/upvotes', (request, response) => {
+  const upvote = [
+    request.body.id, // commentId
+    Math.floor(Math.random()*10000+1), // user ID
+  ]
+  connection.query(
+    // let database create timestamp for now...
+    `delete from upvotes where commentId = ? and userId = ?;`,
+    upvote,
+    function (error, data) {
+      if (error) console.log(error)
+      response.status(201).json({
+        status: "success",
+        message: "upvote deleted",
+      })
+    }
+  )
+})
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname,'index.html'))
 })

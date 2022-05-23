@@ -1,6 +1,7 @@
 // prepare express
 const express = require('express')
 const app = express()
+require('./routes/routes.js')(app)
 const http = require('http')
 const server = http.createServer(app)
 const { Server } = require('socket.io')
@@ -36,28 +37,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('upvote added', id)
   })
 })
-
-
-const comments = require('./controllers/comments.controller');
-const upvotes = require('./controllers/upvotes.controller');
-
-const router = require("express").Router();
-
-// new comment
-router.post('/api/comments', comments.create);
-
-// get all comments
-router.get('/api/comments', comments.getAll);
-
-// add upvote
-router.post('/api/upvotes', upvotes.create);
-
-// delete upvote
-router.delete('/api/upvotes', upvotes.delete);
-
-
-app.use('', router)
-
 
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

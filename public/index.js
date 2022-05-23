@@ -24,6 +24,8 @@ async function postFormDataAsJson({ url, formData }) {
     body: formDataJsonString,
   };
 
+  console.log(fetchOptions,url)
+
   const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {

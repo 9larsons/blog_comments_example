@@ -1,7 +1,6 @@
 // prepare express
 const express = require('express')
 const app = express()
-require('./routes/routes.js')(app)
 const http = require('http')
 const server = http.createServer(app)
 const { Server } = require('socket.io')
@@ -17,18 +16,16 @@ const connection = require('./models/db')
 
 // ... connect
 connection.connect(error => {
+  console.log(`Connected to the database.`)
   if (error) throw error
-  console.log("Connected to the database.")
-}) 
+})
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname,'index.html'))
+  res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 io.on('connection', (socket) => {
-  console.log(`... user connected`)
   socket.on('disconnect', () => {
-    console.log(`.... user disconnected`)
   })
   socket.on('upvote deleted', (id) => {
     socket.broadcast.emit('upvote deleted', id)
@@ -38,6 +35,13 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// keep routes after middleware
+require('./routes/routes.js')(app)
+
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+  })
+}
+
+module.exports = app;

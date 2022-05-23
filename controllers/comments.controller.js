@@ -6,7 +6,7 @@ exports.create = (request, result) => {
   // quick validation (server would reject it as it is nonnullable)
   if (!request.body) {
     result.status(400).send({
-      message: "Comment is empty."
+      message: "Comment body is empty."
     });
   };
 

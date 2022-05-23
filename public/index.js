@@ -52,7 +52,7 @@ async function handleFormSubmit(event) {
 
 // get comments from database
 function getComments() {
-  fetch('/api/getComments')
+  fetch('/api/comments')
     .then(response => response.json())
     .then(data => {
       loadComments(data)
@@ -71,6 +71,7 @@ function loadComments(data) {
   // rebuild comment data into parent and child arrays of comment objects
   let parentComments = []
   let childComments = []
+
   data.forEach(comment => {
     if (comment.replyToId === null) parentComments.push(comment)
     else (childComments.push(comment))
@@ -102,8 +103,8 @@ function loadComments(data) {
           <span class="btn-upvote" id=${id} value=${upvotes}></span>
           <button class="btn-reply" value=${id} onclick="toggleCommentReply(${id})">Reply</button>
             <div class="comment-reply" style="display: none;" value=${id}>
-              <form class="comment-reply-form" action="/api/addComment" method="POST" value=${id}>
-                <textarea class="comment-reply-content" type="text" name="comment" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
+              <form class="comment-reply-form" action="/api/comments" method="POST" value=${id}>
+                <textarea class="comment-reply-content" type="text" name="text" placeholder="... add a comment" rows="3" style="width: 300px;" required></textarea>
                 <input class="comment-reply-button" type="submit" value="Reply" />
               </form>
             </div>
@@ -155,6 +156,7 @@ async function handleReply(e) {
   const url = form.action;
   try {
     const formData = new FormData(form)
+    console.log(formData)
     const replyToId = parseInt(form.getAttribute('value'))
     formData.append('replyToId', replyToId)
     formData.append('userId', _userId)
@@ -227,7 +229,7 @@ function addUpvote(id, userId) {
     body: JSON.stringify({ id, userId })
   };
 
-  fetch(`/api/upvote`, fetchOptions)
+  fetch(`/api/upvotes`, fetchOptions)
     .catch(err => console.log(err))
 }
 

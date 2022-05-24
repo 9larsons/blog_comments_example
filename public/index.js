@@ -11,8 +11,11 @@ newCommentAvatar.alt = `User ${_userId}`
 const newCommentForm = document.getElementById("new-comment-form");
 newCommentForm.addEventListener("submit", handleFormSubmit);
 
+const submitBubble = document.getElementById("new-comment-submitted")
+
 // generic helper for form POST operation handling
 async function postFormDataAsJson({ url, formData }) {
+
   const plainFormData = Object.fromEntries(formData.entries());
   const formDataJsonString = JSON.stringify(plainFormData);
 
@@ -24,7 +27,7 @@ async function postFormDataAsJson({ url, formData }) {
     body: formDataJsonString,
   };
 
-  console.log(fetchOptions,url)
+  console.log(fetchOptions, url)
 
   const response = await fetch(url, fetchOptions);
 
@@ -39,6 +42,10 @@ async function postFormDataAsJson({ url, formData }) {
 // generic form submission handler
 async function handleFormSubmit(event) {
   event.preventDefault();
+  // // mark blurb
+  // setTimeout( (submitBubble) => {
+  //   submitBubble.style.display = 'flex'
+  // },5000)
 
   const form = event.currentTarget;
   const url = form.action;
@@ -55,6 +62,12 @@ async function handleFormSubmit(event) {
   getComments();
   // reset comment input
   document.getElementById("new-comment-box").value = "";
+  // display submitted text for a couple seconds
+  submitBubble.style.display = 'block';
+  setTimeout(() => {
+    submitBubble.style.display = 'none';
+  }, 2000).then(() => { })
+
 }
 
 // get comments from database
@@ -135,7 +148,7 @@ function loadComments(data) {
       })
     }
 
-    })
+  })
 
   commentsList.innerHTML = content
 

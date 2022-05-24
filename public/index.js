@@ -42,10 +42,6 @@ async function postFormDataAsJson({ url, formData }) {
 // generic form submission handler
 async function handleFormSubmit(event) {
   event.preventDefault();
-  // // mark blurb
-  // setTimeout( (submitBubble) => {
-  //   submitBubble.style.display = 'flex'
-  // },5000)
 
   const form = event.currentTarget;
   const url = form.action;

@@ -50,6 +50,11 @@ async function handleFormSubmit(event) {
   } catch (error) {
     console.error(error);
   }
+
+  // updates comments with new content
+  getComments();
+  // reset comment input
+  document.getElementById("new-comment-box").value = "";
 }
 
 // get comments from database
@@ -158,7 +163,6 @@ async function handleReply(e) {
   const url = form.action;
   try {
     const formData = new FormData(form)
-    console.log(formData)
     const replyToId = parseInt(form.getAttribute('value'))
     formData.append('replyToId', replyToId)
     formData.append('userId', _userId)
@@ -166,6 +170,7 @@ async function handleReply(e) {
   } catch (error) {
     console.error(error);
   }
+  getComments();
 }
 
 // define react upvote button component

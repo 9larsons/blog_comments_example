@@ -27,8 +27,6 @@ async function postFormDataAsJson({ url, formData }) {
     body: formDataJsonString,
   };
 
-  console.log(fetchOptions, url)
-
   const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {
@@ -62,7 +60,7 @@ async function handleFormSubmit(event) {
   submitBubble.style.display = 'block';
   setTimeout(() => {
     submitBubble.style.display = 'none';
-  }, 2000).then(() => { })
+  }, 2000)
 
 }
 

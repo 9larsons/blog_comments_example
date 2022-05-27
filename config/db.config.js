@@ -1,6 +1,7 @@
 module.exports = {
-  HOST: "localhost",
-  USER: "root",
+  HOST: "192.168.1.2",
+  USER: "knb",
   PASSWORD: "password",
-  DB: "comments_schema"
+  DB: "comments_schema",
+  PORT: 3306,
 }

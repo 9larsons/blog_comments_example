@@ -8,7 +8,7 @@ const Upvote = function (upvote) {
 
 Upvote.create = (newUpvote, result) => {
   sql.query(
-    `insert into upvotes (commentId,userId,instant) values (?,?,now());`,
+    `insert into upvotes (commentId,userId,instant) values (?,?,UTC_TIMESTAMP());`,
     // convert to array to make sql happy; would be able to use object with SET command
     //  but would lose the sql server setting the time
     Object.values(newUpvote),

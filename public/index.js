@@ -111,7 +111,7 @@ function loadComments(data) {
         <img class="avatar" src="https://robohash.org/${userId}" alt="User ${userId}"/>
         <div class="comment-list-content">
           <div class="comment-list-header">
-            <span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).fromNow()}</span>
+            <span class="comment-list-user">User ${userId}</span> - <span>${moment(instant).utc(true).fromNow()}</span>
           </div>
           <p class="comment-text">${text}</p>
           <span class="btn-upvote" id=${id} value=${upvotes}></span>
@@ -133,7 +133,7 @@ function loadComments(data) {
           <img class="avatar" src="https://robohash.org/${reply.userId}" alt="User ${reply.userId}"/>
           <div class="comment-list-content">
             <div class="comment-list-header">
-              <span class="comment-list-user">User ${reply.userId}</span> - <span>${moment(reply.instant).fromNow()}</span>
+              <span class="comment-list-user">User ${reply.userId}</span> - <span>${moment(reply.instant).utc(true).fromNow()}</span>
             </div>
             <p class="comment-text">${reply.text}</p>
             <div class="btn-upvote" id=${reply.id} value=${reply.upvotes}></div>
